@@ -3,7 +3,7 @@ if [[ $(/usr/bin/id -u) -ne 0 ]]; then
     echo "Not running as root"
     exit
 fi
-#Grabs the last two lines of the sudo logfile (my location) to tmpfile.
+# Grabs the last two lines of the sudo logfile (my location) to tmpfile.
 tail -n2 /var/log/sudo.log > /tmp/comment.tmp
 curr_command="$(tail -n1 /tmp/comment.tmp)"
 curr_shell="$(head -n1 /tmp/comment.tmp | cut -c 31-36)"
