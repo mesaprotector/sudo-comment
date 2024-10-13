@@ -1,0 +1,13 @@
+#!/bin/bash
+echo "Comment on an edit? [y/yp/N] " 
+read comment
+if [[ $comment == N ]]; then
+	echo "No comment added"
+elif [[ $comment == yp ]]; then
+	echo -e "=POSTDATED=" >> /tmp/comment.tmp
+	rvim '+normal Go' /tmp/comment.tmp
+	echo "Comment added"
+else
+	rvim '+normal Go' /tmp/comment.tmp
+	echo "Comment added"
+fi
