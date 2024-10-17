@@ -12,7 +12,8 @@ if grep -qE '=/usr/bin/visudo|=/usr/bin/vim|=/usr/bin/rm|=/usr/bin/rmdir|=/usr/b
 	# Keeps sudo-comment from triggering itself in certain situations.
 	if grep -q -v '/tmp/comment.tmp' <<< $curr_command; then
 		sleep 0.5
-		# Waits until no processes running in foreground on given shell except bash or sudo.
+		# Waits until no processes running in foreground on given shell except bash or sudo. Causes some problems with files named bash (ex. /etc/bash.bashrc). Should use something
+		# other than grep but I'll figure it out later.
 		until [ `ps ax | grep -v "bash" | grep -v "sudo -s" | grep -v "sudo -i" | awk '$3 ~ /\+/' | awk -v shell=$curr_shell '$2 ~ shell' | wc -l` == 0 ]
 		do 
 			sleep 0.1
