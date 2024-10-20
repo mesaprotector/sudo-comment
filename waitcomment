@@ -30,4 +30,6 @@ if grep -qE '=/usr/bin/visudo|=/usr/bin/vim|=/usr/bin/rm|=/usr/bin/rmdir|=/usr/b
 		cat /tmp/comment.tmp >> /var/log/comment.log
 		rm /tmp/comment.tmp
 	fi
+else
+	rm /tmp/comment.tmp
 fi
