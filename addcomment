@@ -6,8 +6,10 @@ if [[ $comment == N ]]; then
 elif [[ $comment == yp ]]; then
 	echo -e "=POSTDATED=" >> /tmp/comment.tmp
 	rvim '+normal Go' /tmp/comment.tmp
+	touch /tmp/changed.tmp
 	echo "Comment added"
 else
 	rvim '+normal Go' /tmp/comment.tmp
+	touch /tmp/changed.tmp
 	echo "Comment added"
 fi
