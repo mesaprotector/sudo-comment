@@ -3,7 +3,7 @@ Description = Prompts user to add comments to certain sudo commands
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/sh -c 'echo /var/log/sudo.log | entr -np /usr/local/bin/waitcomment'
+ExecStart=/usr/bin/sh -c 'echo /var/log/sudo.log | entr -np /usr/local/bin/waitcomment.sh'
 Restart=on-failure
 
 [Install]
