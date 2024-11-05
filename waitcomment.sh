@@ -15,7 +15,7 @@ curr_shell="$(head -n1 /tmp/comment.tmp | cut -c 31-36)"
 if grep -qE '=/usr/bin/visudo|=/usr/bin/vim|=/usr/bin/rm|=/usr/bin/rmdir|=/usr/bin/mkdir|=/usr/bin/trash-put|=/usr/bin/cp|=/usr/bin/touch|=/usr/bin/mv|=/usr/bin/chmod|=/usr/bin/chown|=/usr/bin/pacman -S |=/usr/bin/pacman -R|>' <<< $curr_command; then
 	# Keeps sudo-comment from triggering itself in certain situations.
  	# The pacman exclusions are to prevent makepkg from triggering this, because it causes problems (makepkg doesn't maintain a foreground process being that it's a 
-  	# shell script calling pacman several times). Use -Run if you normally remove packages with -Rnu.
+  	# shell script calling pacman several times). Use -Run for manual removals instead if you normally remove packages with -Rnu.
 	if grep -qE -v 'comment.tmp|changed.tmp|pacman -Rnu|pacman -S --asdeps' <<< $curr_command; then
 		sleep 0.2
 		# Waits until no processes running in foreground on given shell except bash or sudo. Causes some problems with files named bash (ex. /etc/bash.bashrc). Should use something
