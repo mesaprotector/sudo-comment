@@ -24,7 +24,6 @@ if grep -qE '=/usr/bin/visudo|=/usr/bin/vim|=/usr/bin/rm|=/usr/bin/rmdir|=/usr/b
 			sleep 0.1
 		done
   		cat /tmp/comment2.tmp > /tmp/comment.tmp
-		rm /tmp/comment2.tmp
 		chmod 666 /tmp/comment.tmp
 		# Pushes "addcomment" with a newline to the shell.
 		ttyecho -n /dev/$curr_shell 'addcomment'
@@ -41,4 +40,5 @@ if grep -qE '=/usr/bin/visudo|=/usr/bin/vim|=/usr/bin/rm|=/usr/bin/rmdir|=/usr/b
 	fi
 else
 fi
+rm /tmp/comment2.tmp
 rm /tmp/comment.tmp
