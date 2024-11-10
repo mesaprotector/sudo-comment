@@ -3,11 +3,13 @@ echo "Comment on an edit? [y/yp/N] "
 read comment
 if [[ $comment == N ]]; then
 	echo "No comment added"
+# Meant for say, "sudo touch"ing a file that you edited a long time ago, to express that the timestamp shouldn't be trusted.
 elif [[ $comment == yp ]]; then
 	echo -e "=POSTDATED=" >> /tmp/comment.tmp
 	rvim '+normal Go' /tmp/comment.tmp
 	touch /tmp/changed.tmp
 	echo "Comment added"
+# Default is open for comment. If you want to log a command but not comment, just exit vim with :q.
 else
 	rvim '+normal Go' /tmp/comment.tmp
 	touch /tmp/changed.tmp
