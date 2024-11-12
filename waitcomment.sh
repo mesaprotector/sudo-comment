@@ -28,7 +28,7 @@ if grep -qE '=/usr/bin/visudo|=/usr/bin/vim|=/usr/bin/rm|=/usr/bin/rmdir|=/usr/b
 		# Pushes "addcomment" with a newline to the shell.
 		ttyecho -n /dev/$curr_shell 'addcomment'
 		# Waits until addcomment has exited.
-		until [ `ps ax | grep "addcomment" | awk '$3 ~ /\+/' | awk -v shell=$curr_shell '$2 ~ shell' | wc -l` == 0 ]
+		until [ `ps ax | grep addcomment | grep -v grep | wc -l` == 0 ]
 		do
 			sleep 0.1
 		done
