@@ -1,4 +1,8 @@
 #!/bin/bash
+if [[ `ps ax | awk '$5 ~ /\/bin\/bash/' | awk '$6 ~ /\/usr\/local\/bin\/waitcomment.sh/' | wc -l` == 0 ]]; then 
+	echo "No waitcomment process"
+	exit
+fi
 echo "Comment on an edit? [y/yp/N] " 
 read comment
 if [[ $comment == N ]]; then
