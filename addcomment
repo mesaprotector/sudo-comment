@@ -3,19 +3,21 @@ if [[ `ps ax | awk '$5 ~ /\/bin\/bash/' | awk '$6 ~ /\/usr\/local\/bin\/waitcomm
 	echo "No waitcomment process"
 	exit
 fi
+source /usr/local/etc/sudo-comment.conf
+tty=`tty | cut -d '/' -f 3-`
 echo "Comment on an edit? [y/yp/N] " 
 read comment
+mytmpdir=`cat "$tmpdir/$tty"`
 if [[ $comment == N ]]; then
+	echo "N/A" > $tmpdir/$tty 
 	echo "No comment added"
-# Meant for say, "sudo touch"ing a file that you edited a long time ago, to express that the timestamp shouldn't be trusted.
 elif [[ $comment == yp ]]; then
-	echo -e "=POSTDATED=" >> /tmp/comment.tmp
-	rvim '+normal Go' /tmp/comment.tmp
-	touch /tmp/changed.tmp
+	echo -e "=POSTDATED=" >> $mytmpdir/comment.tmp
+	rvim '+normal Go' $mytmpdir/comment.tmp
+	echo "OK" > $tmpdir/$tty
 	echo "Comment added"
-# Default is open for comment. If you want to log a command but not comment, just exit vim with :q.
 else
-	rvim '+normal Go' /tmp/comment.tmp
-	touch /tmp/changed.tmp
+	rvim '+normal Go' $mytmpdir/comment.tmp
+	echo "OK" > $tmpdir/$tty
 	echo "Comment added"
 fi
