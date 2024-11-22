@@ -20,7 +20,7 @@ if [ -z $mytmpdir ]; then
 fi
 # Grabs the last ten lines of the sudo logfile (my location) to tmpfile.
 # Would be better to search from end of file but I don't know how to do that.
-tail -n10 /var/log/sudo.log > $mytmpdir/comment3.tmp
+tail -n10 $sudolog > $mytmpdir/comment3.tmp
 tac $mytmpdir/comment3.tmp | awk '!flag; /TTY/{flag = 1};' | tac > $mytmpdir/comment2.tmp
 rm $mytmpdir/comment3.tmp
 curr_command="$(grep -o COMMAND=.* $mytmpdir/comment2.tmp)"
@@ -51,7 +51,7 @@ if grep -qE '=/usr/bin/visudo|=/usr/bin/vim|=/usr/bin/rm|=/usr/bin/rmdir|=/usr/b
 		output=`cat $tmpdir/$curr_shell`
 		# Appends tmpfile to the comment log IF return traffic says to.
 		if [ $output = "OK" ]; then
-			cat $mytmpdir/comment.tmp >> /var/log/comment.log
+			cat $mytmpdir/comment.tmp >> $commentlog
 		fi
 		rm $mytmpdir/comment.tmp
 	fi
