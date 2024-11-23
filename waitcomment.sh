@@ -50,12 +50,6 @@ if grep -qE "$p_track|>" <<< $curr_command; then
   		# addcomment runs (normally) as user so these files need be to world-writable.
 		chmod 666 $mytmpdir/comment.tmp
 		chmod 666 $tmpdir/$curr_shell
-		ttyecho -n /dev/$curr_shell 'addcomment'
-		echo $mytmpdir > $tmpdir/$curr_shell
-		output=`cat $tmpdir/$curr_shell`
-		if [ $output = "OK" ]; then
-			cat $mytmpdir/comment.tmp >> $commentlog
-		fi
 		# Pushes "addcomment" with a newline to the shell.
 		ttyecho -n /dev/$curr_shell 'addcomment'
 		# Waits until addcomment reads pipe, then waits for return traffic.
