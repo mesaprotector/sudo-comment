@@ -3,7 +3,7 @@ if [ "`/usr/bin/id -u`" != "0" ]; then
     echo "Not running as root"
     exit
 fi
-# Sets working directories and sources config. Should exit if mytmpdir is unset.
+# Sets working directories and sources config. Exits if mytmpdir is unset.
 tmpdir="/tmp/sudo-comment"
 source /usr/local/etc/sudo-comment.conf
 mkdir "$tmpdir" 2>/dev/null
@@ -26,7 +26,17 @@ tac "$mytmpdir"/comment_pre.tmp | awk '!flag; /TTY/{flag = 1};' \
 | tac > "$mytmpdir"/comment.tmp
 rm "$mytmpdir"/comment_pre.tmp
 curr_command="`grep -o "COMMAND=.*" "$mytmpdir"/comment.tmp`"
-curr_shell="`head -n1 "$mytmpdir"/comment.tmp | cut -c 31-35 | tr -d ' '`"
+# Checks if there is more than one `COMMAND=` string in curr_command, which
+# indicates that the last push to the sudo log was not associated with a device.
+cmdcheck="`echo "$curr_command" | grep -Fo "COMMAND=" | wc -l`"
+if [ "$cmdcheck" != "1" ]; then
+	echo "Not a valid device, ignoring"
+	rm "$mytmpdir"/comment.tmp
+	rmdir "$mytmpdir"
+	exit
+fi 
+curr_shell="`head -n1 "$mytmpdir"/comment.tmp | cut -d ';' -f 1-1 \
+| grep -o TTY.* | cut -c 5- | tr -d ' '`"
 # Creates a named pipe to communicate with addcomment process.
 if [ -f "$tmpdir/$curr_shell" ]; then
 	cat "$tmpdir/$curr_shell"
