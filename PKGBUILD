@@ -8,6 +8,7 @@ license=('Apache-2.0')
 depends=(
 	'ttyecho-git'
 	'entr'
+ 	'sudo'
 )
 source=($url/archive/v$pkgver/$pkgname-v$pkgver.tar.gz)
 sha256sums=('76cd4e35800a5e71f19c5c39924e98835d3719f86a77054c87a7fce33e522876')
