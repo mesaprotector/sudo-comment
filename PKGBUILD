@@ -12,7 +12,7 @@ depends=(
  	'sudo'
 )
 source=($url/archive/v$pkgver/$pkgname-v$pkgver.tar.gz)
-sha256sums=('76cd4e35800a5e71f19c5c39924e98835d3719f86a77054c87a7fce33e522876')
+sha256sums=('f24309efb5d25f400941181920b490075ccbdfaf79c0536fabe0f3cfbc180ac4')
 
 package() {
 	cd "${srcdir}/${pkgname}-${pkgver}"
