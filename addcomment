@@ -14,11 +14,22 @@ if [ "$comment" = "N" ]; then
 	echo "No comment added"
 elif [ "$comment" = "yp" ]; then
 	echo -e "=POSTDATED=" >> "$mytmpdir"/comment.tmp
+	lines="`cat "$mytmpdir"/comment.tmp | wc -l`"
+	sed '1s/^/@@ /' "$mytmpdir"/comment.tmp > "$mytmpdir"/head.tmp
 	eval "$editor" "$mytmpdir"/comment.tmp
+	tail -n +$((lines+1)) "$mytmpdir"/comment.tmp \
+	| fold -s | sed 's/^/# /' > "$mytmpdir"/tail.tmp
+	cat "$mytmpdir"/head.tmp "$mytmpdir"/tail.tmp > "$mytmpdir"/comment.tmp
 	echo "OK" > "$tmpdir"/"$tty"
 	echo "Comment added"
 else
+	lines="`cat "$mytmpdir"/comment.tmp | wc -l`"
+	sed -i '1s/^/@@ /' "$mytmpdir"/comment.tmp
+	sed '1s/^/@@ /' "$mytmpdir"/comment.tmp > "$mytmpdir"/head.tmp
 	eval "$editor" "$mytmpdir"/comment.tmp
+	tail -n +$((lines+1)) "$mytmpdir"/comment.tmp \
+	| fold -s | sed 's/^/# /' > "$mytmpdir"/tail.tmp
+	cat "$mytmpdir"/head.tmp "$mytmpdir"/tail.tmp > "$mytmpdir"/comment.tmp	
 	echo "OK" > "$tmpdir"/"$tty"
 	echo "Comment added"
 fi
