@@ -50,7 +50,7 @@ else
 fi
 
 # Parses config file options to pass to grep later, depending on usrbin_prepend.
-if [ "$usrbin_prepend"="yes" ]; then
+if [ "$usrbin_prepend" = "yes" ]; then
 	p_track="`printf '|%s' "${track[@]}" \
  	| sed 's/|/|COMMAND=\/usr\/bin\//g' | tail -c +2`"
 	p_exclude="`printf '|%s' "${exclude[@]}" \
