@@ -1,6 +1,6 @@
 # Maintainer: mesaprotector < arcanapluvia at gmail dot com >
 pkgname=sudo-comment
-pkgver=0.0.2
+pkgver=0.0.3
 pkgrel=1
 pkgdesc='Prompt for comment after certain commands run as root'
 arch=('any')
