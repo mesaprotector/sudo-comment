@@ -26,8 +26,9 @@ Defaults logfile=/var/log/sudo.log (replace with your preferred path)
 
 Defaults!/usr/bin/bash log_subcmds (replace with your preferred shell)
 
+Defaults>root !use_pty (this is included in the default config file and only needs to be uncommented)
+
 The second line above is to get sudo-comment to prompt even when editing files in a root shell
 spawned with commands like sudo -i.
 
-addcomment should be in $PATH, of course. If I ever package this I'll likely put waitcomment.sh in'
-/usr/lib instead, as it should never be run manually.
+addcomment can be run manually if the terminal failed to run it (ex. if you type too fast :>). It will exit immediately if there isn't an unresolved change to the sudo log file though.
