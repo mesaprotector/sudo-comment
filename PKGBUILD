@@ -1,3 +1,4 @@
+# Maintainer: mesaprotector < arcanapluvia at gmail dot com >
 pkgname=sudo-comment
 pkgver=0.0.2
 pkgrel=1
