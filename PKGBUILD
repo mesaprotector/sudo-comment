@@ -1,6 +1,6 @@
 # Maintainer: mesaprotector < arcanapluvia at gmail dot com >
 pkgname=sudo-comment
-pkgver=0.0.3
+pkgver=0.0.4
 pkgrel=1
 pkgdesc='Prompt for comment after certain commands run as root'
 arch=('any')
@@ -12,7 +12,7 @@ depends=(
  	'sudo'
 )
 source=($url/archive/v$pkgver/$pkgname-v$pkgver.tar.gz)
-sha256sums=('f24309efb5d25f400941181920b490075ccbdfaf79c0536fabe0f3cfbc180ac4')
+sha256sums=()
 
 package() {
 	cd "${srcdir}/${pkgname}-${pkgver}"
