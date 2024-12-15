@@ -3,7 +3,7 @@
 if [ $# -eq 0 ]; then
 	less "$commentlog"
 elif [ $# -eq 1 ]; then
-	cat "$commentlog" | grep -A5 "$1" | less
+	awk -v i="$1" 'BEGIN{ RS="@@*" } /i/' "$commentlog" | less
 else
 	echo "Too many arguments."
 fi
