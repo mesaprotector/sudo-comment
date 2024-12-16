@@ -83,6 +83,7 @@ if grep -qE "$p_track|>" <<< "$curr_command"; then
   
   		# addcomment normally runs unprivileged so these files need to be
 		# world-writable.
+		chmod 777 "$mytmpdir"
 		chmod 666 "$mytmpdir"/comment.tmp
 		chmod 666 "$tmpdir/$curr_shell"
   
