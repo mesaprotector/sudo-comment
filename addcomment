@@ -20,41 +20,6 @@ elif [ "$comment" = "yp" ]; then
 	tail -n +$((lines+1)) "$mytmpdir"/comment.tmp \
 	| fold -s | sed 's/^/# /' > "$mytmpdir"/tail.tmp
 	cat "$mytmpdir"/head.tmp "$mytmpdir"/tail.tmp > "$mytmpdir"/comment.tmp
-	echo "OK" > "$tmpdir"/"$tty"
-	echo "Comment added"
-else
-	lines="`cat "$mytmpdir"/comment.tmp | wc -l`"
-	sed -i '1s/^/@@ /' "$mytmpdir"/comment.tmp
-	sed '1s/^/@@ /' "$mytmpdir"/comment.tmp > "$mytmpdir"/head.tmp
-	eval "$editor" "$mytmpdir"/comment.tmp
-	tail -n +$((lines+1)) "$mytmpdir"/comment.tmp \
-	| fold -s | sed 's/^/# /' > "$mytmpdir"/tail.tmp
-	cat "$mytmpdir"/head.tmp "$mytmpdir"/tail.tmp > "$mytmpdir"/comment.tmp	
-	echo "OK" > "$tmpdir"/"$tty"
-	echo "Comment added"
-fi
-#!/bin/bash
-if [ "`ps ax | awk '$5 ~ /\/bin\/bash/' | awk '$6 ~ \
-/\/lib\/waitcomment.sh/' | wc -l`" = "0" ]; then 
-	echo "No waitcomment process"
-	exit
-fi
-. /etc/sudo-comment.conf
-tty="`tty | cut -d '/' -f 3-`"
-mytmpdir="`cat "$tmpdir/$tty"`"
-echo "Comment on an edit? [y/yp/N] " 
-read -r comment
-if [ "$comment" = "N" ]; then
-	echo "N/A" > "$tmpdir"/"$tty" 
-	echo "No comment added"
-elif [ "$comment" = "yp" ]; then
-	echo -e "=POSTDATED=" >> "$mytmpdir"/comment.tmp
-	lines="`cat "$mytmpdir"/comment.tmp | wc -l`"
-	sed '1s/^/@@ /' "$mytmpdir"/comment.tmp > "$mytmpdir"/head.tmp
-	eval "$editor" "$mytmpdir"/comment.tmp
-	tail -n +$((lines+1)) "$mytmpdir"/comment.tmp \
-	| fold -s | sed 's/^/# /' > "$mytmpdir"/tail.tmp
-	cat "$mytmpdir"/head.tmp "$mytmpdir"/tail.tmp > "$mytmpdir"/comment.tmp
 	rm "$mytmpdir"/head.tmp "$mytmpdir"/tail.tmp
 	echo "OK" > "$tmpdir"/"$tty"
 	echo "Comment added"
