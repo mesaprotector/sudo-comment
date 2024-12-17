@@ -3,7 +3,7 @@
 if [ $# -eq 0 ]; then
 	less "$commentlog"
 elif [ $# -eq 1 ]; then
-	awk -v i="$1" 'BEGIN{ RS="@@*" } /i/' "$commentlog" | less
+	sed -n "/^@@/!{H;$!d};x;/$1/p" "$commentlog" | less
 else
 	echo "Too many arguments."
 fi
