@@ -1,10 +1,9 @@
 #!/bin/bash
-if [ "`ps ax | awk '$5 ~ /\/bin\/bash/' | awk '$6 ~ \
-/\/lib\/waitcomment.sh/' | wc -l`" = "0" ]; then 
+if [ "`pgrep -fax '/bin/bash /lib/waitcomment.sh' | wc -l`" = 0 ]; then 
 	echo "No waitcomment process"
 	exit
 fi
-. /etc/sudo-comment.conf
+source /etc/sudo-comment.conf
 tty="`tty | cut -d '/' -f 3-`"
 mytmpdir="`cat "$tmpdir/$tty"`"
 echo "Comment on an edit? [y/yp/N] " 
@@ -18,7 +17,8 @@ elif [ "$comment" = "yp" ]; then
 	sed '1s/^/@@ /' "$mytmpdir"/comment.tmp > "$mytmpdir"/head.tmp
 	eval "$editor" "$mytmpdir"/comment.tmp
 	tail -n +$((lines+1)) "$mytmpdir"/comment.tmp \
-	| fold -s | sed 's/^/# /' > "$mytmpdir"/tail.tmp
+	| fold -s > "$mytmpdir"/tail.tmp
+	sed -i 's/^/# /' "$mytmpdir"/tail.tmp
 	cat "$mytmpdir"/head.tmp "$mytmpdir"/tail.tmp > "$mytmpdir"/comment.tmp
 	rm "$mytmpdir"/head.tmp "$mytmpdir"/tail.tmp
 	echo "OK" > "$tmpdir"/"$tty"
@@ -28,7 +28,8 @@ else
 	sed '1s/^/@@ /' "$mytmpdir"/comment.tmp > "$mytmpdir"/head.tmp
 	eval "$editor" "$mytmpdir"/comment.tmp
 	tail -n +$((lines+1)) "$mytmpdir"/comment.tmp \
-	| fold -s | sed 's/^/# /' > "$mytmpdir"/tail.tmp
+	| fold -s > "$mytmpdir"/tail.tmp
+	sed -i 's/^/# /' "$mytmpdir"/tail.tmp
 	cat "$mytmpdir"/head.tmp "$mytmpdir"/tail.tmp > "$mytmpdir"/comment.tmp	
 	rm "$mytmpdir"/head.tmp "$mytmpdir"/tail.tmp
 	echo "OK" > "$tmpdir"/"$tty"

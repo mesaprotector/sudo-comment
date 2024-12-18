@@ -33,7 +33,8 @@ rm "$mytmpdir"/comment_pre.tmp
 curr_command="`grep -o "COMMAND=.*" "$mytmpdir"/comment.tmp | head -n 1`"
 by_user="`head -n1 "$mytmpdir"/comment.tmp | cut -d ':' -f 4-4 \
 | awk '{$1=$1;print}'`"
-as_user="`grep -o "USER=.*" "$mytmpdir"/comment.tmp | head -n 1 | head -c -2`"
+as_user="`grep -o "USER=.*" "$mytmpdir"/comment.tmp | head -n 1 \
+| sed 's/ ;$//g' | tail -c +6`"
 
 # Checks if the user who ran sudo, and the user they ran it as, are on the 
 # tracking list.
