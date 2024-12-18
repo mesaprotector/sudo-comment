@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 if [ "`/bin/id -u`" != "0" ]; then
     echo "Not running as root"
     exit
@@ -6,7 +6,9 @@ fi
 
 # Sets working directories and sources config. Exits if mytmpdir is unset.
 tmpdir="/tmp/sudo-comment"
-. /etc/sudo-comment.conf
+source /etc/sudo-comment.conf
+_tmpdir="`echo "$tmpdir" | sed -s 's/\/$//g'`"
+tmpdir="$_tmpdir"
 mkdir "$tmpdir" 2>/dev/null
 mkdir "$tmpdir"/pts 2>/dev/null
 for ((i=0;i<100;i++)); do
@@ -22,13 +24,34 @@ if [ -z "$mytmpdir" ]; then
 fi
 
 # Grabs the last ten lines of the sudo logfile (my location) to tmpfile.
-# Would be better to search from end of file but I don't know how to do that.
 tail -n10 "$sudolog" > "$mytmpdir"/comment_pre.tmp
 tac "$mytmpdir"/comment_pre.tmp | awk '!flag; /TTY/{flag = 1};' \
 | tac > "$mytmpdir"/comment.tmp
 rm "$mytmpdir"/comment_pre.tmp
-curr_command="`grep -o "COMMAND=.*" "$mytmpdir"/comment.tmp`"
 
+# Grabs sections of the last log entry that will be used for checks.
+curr_command="`grep -o "COMMAND=.*" "$mytmpdir"/comment.tmp | head -n 1`"
+by_user="`head -n1 "$mytmpdir"/comment.tmp | cut -d ':' -f 4-4 \
+| awk '{$1=$1;print}'`"
+as_user="`grep -o "USER=.*" "$mytmpdir"/comment.tmp | head -n 1 | head -c -2`"
+
+# Checks if the user who ran sudo, and the user they ran it as, are on the 
+# tracking list.
+p_by_user="`printf '|%s' "${run_by_user[@]}" | tail -c +2`"
+p_as_user="`printf '|%s' "${run_as_user[@]}" | tail -c +2`"
+if grep -qE -v "$p_by_user" <<< "$by_user"; then
+	echo "User (by) not tracked, ignoring"
+	rm "$mytmpdir"/comment.tmp
+	rmdir "$mytmpdir"
+	exit
+fi
+if grep -qE -v "$p_as_user" <<< "$as_user"; then
+	echo "User (as) not tracked, ignoring"
+	rm "$mytmpdir"/comment.tmp
+	rmdir "$mytmpdir"
+	exit
+fi
+ 
 # Checks if there is more than one `COMMAND=` string in curr_command, which
 # indicates that the last push to the sudo log was not associated with a device.
 cmdcheck="`echo "$curr_command" | grep -Fo "COMMAND=" | wc -l`"
