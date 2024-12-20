@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 if [ "`/bin/id -u`" != "0" ]; then
     echo "Not running as root"
     exit
