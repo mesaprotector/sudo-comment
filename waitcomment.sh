@@ -105,9 +105,14 @@ if grep -qE "$p_track|>" <<< "$curr_command"; then
 			sleep 0.1
 		done
   
-  		# addcomment normally runs unprivileged so these files need to be
-		# world-writable.
-		chmod 777 "$mytmpdir"
+  		# Create variables and files needed for formatting new entry.
+		lines="`cat "$mytmpdir"/comment.tmp | wc -l`"
+		sed '1s/^/@@ /' "$mytmpdir"/comment.tmp > "$mytmpdir"/head.tmp
+		touch "$mytmpdir"/tail.tmp
+
+		# addcomment normally runs unprivileged so these files need to
+		# be world-writable. TODO: assign ownership to run_by_user or
+		# run_as_user according to shell process.
 		chmod 666 "$mytmpdir"/comment.tmp
 		chmod 666 "$tmpdir/$curr_shell"
   
@@ -120,6 +125,11 @@ if grep -qE "$p_track|>" <<< "$curr_command"; then
   
 		# Appends tmpfile to the comment log IF return traffic says to.
 		if [ "$output" = "OK" ]; then
+			tail -n +$((lines+1)) "$mytmpdir"/comment.tmp \
+			| fold -s > "$mytmpdir"/tail.tmp
+			sed -i 's/^/# /2g' "$mytmpdir"/tail.tmp
+			cat "$mytmpdir"/head.tmp "$mytmpdir"/tail.tmp > \
+			"$mytmpdir"/comment.tmp
 			cat "$mytmpdir"/comment.tmp >> "$commentlog"
 		fi
 	fi
@@ -127,6 +137,8 @@ fi
 
 # Cleans up. If the process was made to exit by a duplicate process, don't
 # delete the pipe.
+rm "$mytmpdir"/head.tmp
+rm "$mytmpdir"/tail.tmp
 rm "$mytmpdir"/comment.tmp
 rmdir "$mytmpdir"
 if [ "$output" != "EXIT" ]; then
