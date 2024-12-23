@@ -1,10 +1,10 @@
-#!/bin/bash
-if [ "`pgrep -fax '/bin/bash /lib/waitcomment.sh' | wc -l`" = 0 ]; then 
+#!/usr/bin/env bash
+source /etc/sudo-comment.conf
+tty="`tty | cut -d '/' -f 3-`"
+if [ ! -p "$tmpdir/$tty" ]; then
 	echo "No waitcomment process"
 	exit
 fi
-source /etc/sudo-comment.conf
-tty="`tty | cut -d '/' -f 3-`"
 mytmpdir="`cat "$tmpdir/$tty"`"
 echo "Comment on an edit? [y/yp/N] " 
 read -r comment

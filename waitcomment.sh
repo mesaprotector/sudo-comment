@@ -1,14 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env bash
 if [ "`/bin/id -u`" != "0" ]; then
     echo "Not running as root"
     exit
 fi
 
 # Sets working directories and sources config. Exits if mytmpdir is unset.
-tmpdir="/tmp/sudo-comment"
 source /etc/sudo-comment.conf
 _tmpdir="`echo "$tmpdir" | sed -s 's/\/$//g'`"
-tmpdir="$_tmpdir"
+tmpdir="${_tmpdir:-/tmp/sudo-comment}"
 mkdir "$tmpdir" 2>/dev/null
 mkdir "$tmpdir"/pts 2>/dev/null
 for ((i=0;i<100;i++)); do
@@ -123,11 +122,11 @@ if grep -qE "$p_track|>" <<< "$curr_command"; then
 		echo "$mytmpdir" > "$tmpdir/$curr_shell"
 		output="`cat "$tmpdir/$curr_shell"`"
   
-		# Appends tmpfile to the comment log IF return traffic says to.
+		# Formats and appends to commentlog IF return traffic says to.
 		if [ "$output" = "OK" ]; then
 			tail -n +$((lines+1)) "$mytmpdir"/comment.tmp \
 			| fold -s > "$mytmpdir"/tail.tmp
-			sed -i 's/^/# /2g' "$mytmpdir"/tail.tmp
+			sed -i '2,$s/^/# /' "$mytmpdir"/tail.tmp
 			cat "$mytmpdir"/head.tmp "$mytmpdir"/tail.tmp > \
 			"$mytmpdir"/comment.tmp
 			cat "$mytmpdir"/comment.tmp >> "$commentlog"
