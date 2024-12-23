@@ -3,7 +3,8 @@
 if [ $# -eq 0 ]; then
 	less "$commentlog"
 elif [ $# -eq 1 ]; then
-	sed -n "/^@@/!{H;$!d};x;/$1/p" "$commentlog" | less
+	commentlog_append="`cat "$commentlog" <(echo "@@")`"
+	sed -n "/^@@/!{H;$!d};x;/$1/p" <<< "$commentlog_append" | less
 else
 	echo "Too many arguments."
 fi
