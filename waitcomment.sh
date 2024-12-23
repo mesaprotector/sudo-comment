@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Check if running as root; if not, exit.
 if [ "`/bin/id -u`" != "0" ]; then
     echo "Not running as root"
     exit
@@ -22,7 +23,7 @@ if [ -z "$mytmpdir" ]; then
 	exit
 fi
 
-# Grabs the last ten lines of the sudo logfile (my location) to tmpfile.
+# Grabs the last ten lines of the sudo logfile to tmpfile.
 tail -n10 "$sudolog" > "$mytmpdir"/comment_pre.tmp
 tac "$mytmpdir"/comment_pre.tmp | awk '!flag; /TTY/{flag = 1};' \
 | tac > "$mytmpdir"/comment.tmp
@@ -65,7 +66,7 @@ curr_shell="`head -n1 "$mytmpdir"/comment.tmp | cut -d ';' -f 1-1 \
 | grep -o TTY.* | cut -c 5- | tr -d ' '`"
 
 # Creates a named pipe to communicate with addcomment process.
-if [ -f "$tmpdir/$curr_shell" ]; then
+if [ -p "$tmpdir/$curr_shell" ]; then
 	cat "$tmpdir/$curr_shell"
 	echo "EXIT" > "$tmpdir/$curr_shell"
 else
@@ -110,8 +111,9 @@ if grep -qE "$p_track|>" <<< "$curr_command"; then
 		touch "$mytmpdir"/tail.tmp
 
 		# addcomment normally runs unprivileged so these files need to
-		# be world-writable. TODO: assign ownership to run_by_user or
-		# run_as_user according to shell process.
+		# be world-writable. For this grave shell scripting sin we pray 
+		# to great lord Satan. TODO: explore assigning ownership with
+		# run_by_user or run_as_user. Not convinced it's an improvement.
 		chmod 666 "$mytmpdir"/comment.tmp
 		chmod 666 "$tmpdir/$curr_shell"
   
