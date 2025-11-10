@@ -14,7 +14,7 @@ if [ "$comment" = "N" ]; then
 elif [ "$comment" = "yp" ]; then
 	echo -e "=POSTDATED=" >> "$mytmpdir"/comment.tmp
 	eval "$editor" "$mytmpdir"/comment.tmp
-	echo "OK" > "$tmpdir"/"$tty"
+	echo "OK_POST" > "$tmpdir"/"$tty"
 	echo "Comment added"
 else
 	eval "$editor" "$mytmpdir"/comment.tmp

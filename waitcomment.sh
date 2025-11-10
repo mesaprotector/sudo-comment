@@ -30,7 +30,8 @@ tac "$mytmpdir"/comment_pre.tmp | awk '!flag; /TTY/{flag = 1};' \
 rm "$mytmpdir"/comment_pre.tmp
 
 # Grabs sections of the last log entry that will be used for checks.
-curr_command="`grep -o "COMMAND=.*" "$mytmpdir"/comment.tmp | head -n 1`"
+curr_command="`cat "$mytmpdir"/comment.tmp | tr '\n' ' ' \
+| grep -o "COMMAND=.*"`"
 by_user="`head -n1 "$mytmpdir"/comment.tmp | cut -d ':' -f 4-4 \
 | awk '{$1=$1;print}'`"
 as_user="`grep -o "USER=.*" "$mytmpdir"/comment.tmp | head -n 1 \
@@ -125,10 +126,14 @@ if grep -qE "$p_track|>" <<< "$curr_command"; then
 		output="`cat "$tmpdir/$curr_shell"`"
   
 		# Formats and appends to commentlog IF return traffic says to.
-		if [ "$output" = "OK" ]; then
+		if [ "$output" = "OK" ] || [ "$output" = "OK_POST" ]; then
 			tail -n +$((lines+1)) "$mytmpdir"/comment.tmp \
 			| fold -s > "$mytmpdir"/tail.tmp
-			sed -i '2,$s/^/# /' "$mytmpdir"/tail.tmp
+			if [ "$output" = "OK_POST" ]; then
+				sed -i '2,$s/^/# /' "$mytmpdir"/tail.tmp
+			else
+				sed -i 's/^/# /' "$mytmpdir"/tail.tmp
+			fi
 			cat "$mytmpdir"/head.tmp "$mytmpdir"/tail.tmp > \
 			"$mytmpdir"/comment.tmp
 			cat "$mytmpdir"/comment.tmp >> "$commentlog"
